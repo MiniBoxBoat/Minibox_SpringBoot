@@ -105,7 +105,7 @@ CREATE TABLE `user_info` (
   `taken` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`user_id`,`username`),
   UNIQUE(`username`),
-  UNIQUE(`phone_number`),
+  UNIQUE(`phone_number`)
 );
 
 DROP TABLE IF EXISTS `verifycode`;

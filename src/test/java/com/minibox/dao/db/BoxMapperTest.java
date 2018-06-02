@@ -66,15 +66,4 @@ public class BoxMapperTest {
         int emptyLargeBoxCount = boxMapper.findEmptyLargeBoxCountByGroupId(1);
         assertEquals(10, emptyLargeBoxCount);
     }
-
-    @Autowired
-    private RedisVerifyCode redisVerifyCode;
-
-    @Test
-    public void test(){
-        Optional<String> optional = Optional.ofNullable(null);
-        String str = optional.orElse("may");
-        System.out.println(str);
-    }
-
 }

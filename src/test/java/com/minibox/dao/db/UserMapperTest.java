@@ -28,6 +28,7 @@ public class UserMapperTest {
         user.setUserName("myj3");
         user.setTrueName("梅勇杰2");
         user.setSex("男");
+        user.setPassword("fsdfs");
     }
 
     @Test
@@ -64,6 +65,7 @@ public class UserMapperTest {
     @Test
     public void updateUserTest() throws CloneNotSupportedException {
         UserPo userPo = (UserPo) user.clone();
+        userPo.setUserName("mkmk");
         userPo.setUserId(135);
         boolean flag = userMapper.updateUser(userPo);
         assertTrue(flag);
