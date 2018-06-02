@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.minibox.dao.db.BoxMapper">
+    <resultMap id="boxPo" type="com.minibox.po.BoxPo">
+        <id property="boxId" column="box_id"/>
+        <result property="boxSize" column="box_size"/>
+        <result property="boxStatus" column="box_status"/>
+        <result property="groupId" column="group_id"/>
+    </resultMap>
+
+    <sql id="box_columns">
+        box_id, box_size, box_status, group_id
+    </sql>
+
+    <select id="findBoxByBoxId" parameterType="java.lang.Integer" resultMap="boxPo">
+        SELECT
+        <include refid="box_columns"/>
+        FROM box_info WHERE box_id=#{boxId}
+    </select>
+
+    <select id="findUsingBoxesByUserId" parameterType="java.lang.Integer" resultMap="boxPo">
+        SELECT <include refid="box_columns"/>
+        FROM box_info
+        WHERE box_id IN (SELECT box_id FROM order_info WHERE user_id=#{userId} AND del_flag='0')
+    </select>
+
+    <select id="findReservingBoxedByUserId" parameterType="java.lang.Integer" resultMap="boxPo">
+        select
+        <include refid="box_columns"/>
+        from box_info WHERE box_id IN (SELECT box_id from reservation_info WHERE user_id=#{userId} and exp_flag=0)
+    </select>
+
+    <select id="findEmptySmallBoxByGroupId" parameterType="java.lang.Integer" resultMap="boxPo">
+        SELECT
+        <include refid="box_columns"/>
+        FROM box_info
+        WHERE box_size='小' AND group_id=#{groupId} AND box_status=0
+    </select>
+
+    <select id="findEmptySmallBoxCountByGroupId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT count(box_id)
+        FROM box_info
+        WHERE box_size = '小' AND group_id = #{groupId} AND box_status = 0
+    </select>
+
+    <select id="findEmptyLargeBoxByGroupId" parameterType="java.lang.Integer" resultMap="boxPo">
+        SELECT
+        <include refid="box_columns"/>
+        FROM box_info
+        WHERE box_size='大' AND group_id=#{groupId} AND box_status=0
+    </select>
+
+    <select id="findEmptyLargeBoxCountByGroupId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT count(box_id)
+        FROM box_info
+        WHERE box_size = '大' AND group_id = #{groupId} AND box_status = 0
+    </select>
+
+    <select id="findBoxesByGroupId" parameterType="java.lang.Integer" resultMap="boxPo">
+        SELECT
+        <include refid="box_columns"/>
+        FROM box_info WHERE group_id=#{groupId}
+    </select>
+
+    <update id="updateBoxStatus" parameterType="java.lang.Integer">
+        UPDATE box_info
+        SET box_status =
+        CASE
+        WHEN box_status = 1
+            THEN '0'
+        WHEN box_status = 0
+            THEN '1'
+        END
+        WHERE box_id = #{boxId}
+    </update>
+</mapper>

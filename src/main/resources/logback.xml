@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="4" debug="true">
+
+    <property name="log_dir" value="/data/minibox"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%5level] [%thread] %logger{0} %msg%n</Pattern>
+        </encoder>
+    </appender>
+
+    <appender name="USER_SERVICE_LOG" class="ch.qos.logback.core.FileAppender">
+        <file>${log_dir}/userService.log</file>
+        <append>true</append>
+        <!-- set immediateFlush to false for much higher logging throughput -->
+        <immediateFlush>true</immediateFlush>
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="SCHEDULE_TASK_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log_dir}/scheduleTask.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log_dir}/scheduleTask.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%-4relative %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="EXCEPTION_LOG" class="ch.qos.logback.core.FileAppender">
+        <file>${log_dir}/exception.log</file>
+        <append>true</append>
+        <!-- set immediateFlush to false for much higher logging throughput -->
+        <immediateFlush>true</immediateFlush>
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="INFO_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log_dir}/info.log</file>
+        <!-- 根据时间来制定滚动策略，既负责滚动也负责触发滚动。 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 每天生成日志文件 -->
+            <fileNamePattern>${log_dir}/infoLogFile.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- 保留最近30天的日志文件 -->
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%-4relative %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.minibox.service.UserService">
+        <appender-ref ref="USER_SERVICE_LOG"/>
+    </logger>
+
+    <logger name="com.minibox.schedule_task.ScheduleTaskImp" level="DEBUG" additivity="false">
+        <appender-ref ref="SCHEDULE_TASK_LOG"/>
+        <!--<appender-ref ref="STDOUT"/>-->
+    </logger>
+
+    <logger name="exception" level="WARN" additivity="false">
+        <appender-ref ref="EXCEPTION_LOG"/>
+    </logger>
+
+    <logger name="com.minibox" level="TRACE" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>

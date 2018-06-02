@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.minibox.dao.db.UserMapper">
+
+    <resultMap id="user" type="com.minibox.po.UserPo">
+        <id property="userId" column="user_id"/>
+        <result property="userName" column="username"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="password" column="password"/>
+        <result property="sex" column="sex"/>
+        <result property="email" column="email"/>
+        <result property="image" column="image"/>
+        <result property="trueName" column="true_name"/>
+        <result property="credibility" column="credibility"/>
+        <result property="useTime" column="use_time"/>
+    </resultMap>
+
+    <resultMap id="verifyCode" type="com.minibox.po.VerifyCodePo">
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="verifyCode" column="verify_code"/>
+    </resultMap>
+
+    <sql id="user_columns">
+      user_id, userName, password, phone_number, sex, email, image, true_name, credibility, use_time
+    </sql>
+
+    <sql id="verifyCode_column">
+      phone_number, verify_code
+    </sql>
+
+    <insert id="insertUser" parameterType="com.minibox.po.UserPo" keyProperty="userId" useGeneratedKeys="true">
+        INSERT INTO user_info (username, password, phone_number, sex, email)
+        VALUES (#{userName}, #{password}, #{phoneNumber}, #{sex}, #{email})
+    </insert>
+
+    <select id="findUserByPhoneNumber" parameterType="java.lang.String" resultMap="user">
+        SELECT
+        <include refid="user_columns"/>
+        from user_info WHERE phone_number=#{phoneNumber}
+    </select>
+
+    <select id="findUserByUserNameAndPassword" resultMap="user">
+        SELECT
+        <include refid="user_columns"/>
+        FROM user_info
+        WHERE username=#{userName} AND password=#{password}
+    </select>
+
+    <select id="findUserByUserId" parameterType="java.lang.Integer" resultMap="user">
+        SELECT
+        <include refid="user_columns"/>
+        FROM user_info WHERE user_id=#{userId}
+    </select>
+
+    <update id="updateUser" parameterType="com.minibox.po.UserPo">
+        UPDATE user_info
+        <set>
+            <if test="userName!= null">
+                username=#{userName},
+            </if>
+            <if test="phoneNumber!=null">
+                phone_number=#{phoneNumber},
+            </if>
+            <if test="sex!=null">
+                sex=#{sex},
+            </if>
+            <if test="email!=null">
+                email=#{email},
+            </if>
+            <if test="trueName!=null">
+                true_name=#{trueName}
+            </if>
+        </set>
+        WHERE user_id=#{userId}
+    </update>
+
+    <update id="updateUseTime">
+        UPDATE user_info
+        SET use_time = use_time + 1
+        WHERE user_id = #{userId}
+    </update>
+
+    <select id="findUserByPhoneNumberAndPassword" resultMap="user">
+        SELECT
+        <include refid="user_columns"/>
+        from user_info WHERE phone_number=#{phoneNumber} and password=#{password}
+    </select>
+
+    <select id="findUserByUserName" resultMap="user">
+        SELECT
+        <include refid="user_columns"/>
+        from user_info WHERE username=#{userName}
+    </select>
+
+    <update id="updateAvatarByAvatarAndUserId">
+        UPDATE user_info
+        SET image = #{avatar}
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="updatePasswordByNewPasswordAndUserId">
+        UPDATE user_info
+        SET password = #{newPassword}
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="updateTakenByTakenAndUserId">
+        UPDATE user_info
+        SET taken = #{taken}
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="increaseUserCredibilityPerWeek">
+        UPDATE user_info
+        SET credibility = credibility + 5
+        WHERE
+            (SELECT count(reservation_id)
+             FROM reservation_info
+             WHERE reservation_info.user_id = user_info.user_id
+                   AND open_time > Date_add(now(), interval '-7' DAY) AND exp_flag = 1) = 0 AND
+            100 > user_info.credibility
+    </update>
+
+    <insert id="insertVerifyCode" parameterType="com.minibox.po.VerifyCodePo">
+        INSERT INTO verifycode (phone_number, verify_code) VALUES (#{phoneNumber}, #{verifyCode})
+    </insert>
+
+    <select id="findVerifyCode" parameterType="java.lang.String" resultMap="verifyCode">
+        select
+        <include refid="verifyCode_column"/>
+        from verifycode where phone_number=#{phoneNumber}
+    </select>
+</mapper>

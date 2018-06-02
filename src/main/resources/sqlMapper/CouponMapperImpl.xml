@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.minibox.dao.db.CouponMapper">
+    <resultMap id="coupon" type="com.minibox.po.CouponPo">
+        <id property="couponId" column="coupon_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="money" column="money"/>
+        <result property="deadlineTime" column="deadline_time" jdbcType="TIMESTAMP" javaType="java.lang.String"/>
+    </resultMap>
+
+    <sql id="coupon_columns">
+        coupon_id, user_id, money, deadline_time
+    </sql>
+
+    <insert id="insertCoupon" parameterType="com.minibox.po.CouponPo" useGeneratedKeys="true" keyProperty="couponId">
+        INSERT INTO coupon (user_id, money, deadline_time)
+        VALUES (#{userId}, #{money}, #{deadlineTime})
+    </insert>
+
+    <update id="removeCoupon" parameterType="java.lang.Integer">
+        UPDATE coupon
+        SET del_flag = '1'
+        WHERE coupon_id = #{couponId}
+    </update>
+
+    <select id="findCouponsByUserId" parameterType="java.lang.Integer" resultMap="coupon">
+        SELECT
+        <include refid="coupon_columns"/>
+        FROM coupon
+        WHERE user_id=#{userId} AND del_flag='0'
+    </select>
+
+    <select id="findCouponByCouponId" parameterType="java.lang.Integer" resultMap="coupon">
+        SELECT <include refid="coupon_columns"/>
+        FROM coupon
+        WHERE coupon_id=#{couponId}
+    </select>
+
+</mapper>
