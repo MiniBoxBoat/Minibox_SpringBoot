@@ -2,6 +2,7 @@ package com.minibox.socket;
 
 import com.minibox.constants.HardwareMessage;
 import com.minibox.exception.ServerException;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -17,6 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author May
  */
+
+@Slf4j
 public class SocketConnection {
     public static Map<Integer, SocketChannel> map = new ConcurrentHashMap<>();
     private static final int PORT_NUMBER = 1234;
@@ -44,12 +47,12 @@ public class SocketConnection {
                     clientSocket.register(selector, SelectionKey.OP_READ |
                             SelectionKey.OP_WRITE);
                     map.put(1, clientSocket);
-                    System.out.println("客户端连接成功");
+                    log.trace("客户端连接成功");
                 } else if (key.isReadable()) {
                     SocketChannel clientSocket = (SocketChannel) key.channel();
                     clientSocket.close();
                     map.remove(1);
-                    System.out.println("客户端断开连接");
+                    log.trace("客户端断开连接");
                 }
             }
         }
