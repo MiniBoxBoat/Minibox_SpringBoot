@@ -77,7 +77,7 @@ public class OrderService {
 
     private List<Integer> getCanUseBoxesId(OrderDto orderDto) {
         List<Integer> boxIdList = new ArrayList<>();
-        if (orderDto.getSize().equals(SMALL.size())) {
+        if (orderDto.getBoxSize().equals(SMALL.size())) {
             List<BoxPo> smallBoxPos = boxDao.findEmptySmallBoxByGroupId(orderDto.getGroupId());
             if (smallBoxPos.size() == 0) {
                 throw new ParameterException(ExceptionMessage.NO_BOX);
@@ -98,11 +98,11 @@ public class OrderService {
     }
 
     private void checkAddOrderParameters(OrderDto orderDto) {
-        if (orderDto.getGroupId() == null || orderDto.getSize() == null
+        if (orderDto.getGroupId() == null || orderDto.getBoxSize() == null
                 || orderDto.getBoxNum() == null) {
             throw new ParameterException(ExceptionMessage.PARAMETER_IS_NOT_FULL);
         }
-        checkBoxSizeIsTrue(orderDto.getSize());
+        checkBoxSizeIsTrue(orderDto.getBoxSize());
     }
 
     private List<OrderPo> orderDtoToOrderPoList(OrderDto orderDto, int userId, List<Integer> canUseBoxIds) {
