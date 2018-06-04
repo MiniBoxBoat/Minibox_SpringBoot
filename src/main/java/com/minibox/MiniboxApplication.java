@@ -23,8 +23,8 @@ import java.io.IOException;
 public class MiniboxApplication {
 
     public static void main(String[] args) throws IOException {
-        SocketConnection.waitToConnect();
         SpringApplication.run(MiniboxApplication.class, args);
+        SocketConnection.waitToConnect();
     }
 
     @Bean
