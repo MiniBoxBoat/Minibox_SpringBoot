@@ -49,7 +49,8 @@ public class UserService {
     }
 
     private void checkUserParameterAndIfDouble(UserPo user){
-        if (user.getUserName()==null || user.getEmail()==null || user.getSex()==null){
+        if (user.getUserName()==null || user.getSex()==null
+                || user. getPhoneNumber() == null ){
             throw new ParameterException(ExceptionMessage.PARAMETER_IS_NOT_FULL);
         }
         ServiceExceptionChecking.checkUserNameIsTooLong(user.getUserName());
@@ -145,21 +146,26 @@ public class UserService {
     }
 
     private UserVo userPoToUserVo(UserPo userPo){
-        UserVo user = new UserVo.UserVoBuilder()
-                .userId(userPo.getUserId())
-                .userName(userPo.getUserName())
-                .credibility(userPo.getCredibility())
-                .email(userPo.getEmail())
-                .phoneNumber(userPo.getPhoneNumber())
-                .sex(userPo.getSex())
-                .useTime(userPo.getUseTime())
-                .build();
+        UserVo userVo = new UserVo();
+        userVo.setUserId(userPo.getUserId());
+        userVo.setCredibility(userPo.getCredibility());
+        userVo.setUseTime(userPo.getUseTime());
+        userVo.setSex(userPo.getSex());
+        if (userPo.getUserName() != null) {
+            userVo.setUserName(userPo.getUserName());
+        }
+        if (userPo.getEmail() != null){
+            userVo.setEmail(userPo.getEmail());
+        }
+        if(userPo.getPhoneNumber() != null){
+            userVo.setPhoneNumber(userPo.getPhoneNumber());
+        }
         if (userPo.getImage() != null){
-            user.setImage(userPo.getImage());
+            userVo.setImage(userPo.getImage());
         }
         if (userPo.getTrueName() != null) {
-            user.setTrueName(userPo.getTrueName());
+            userVo.setTrueName(userPo.getTrueName());
         }
-        return user;
+        return userVo;
     }
 }

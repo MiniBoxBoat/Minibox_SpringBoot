@@ -67,6 +67,7 @@ public class UserMapperTest {
         UserPo userPo = (UserPo) user.clone();
         userPo.setUserName("mkmk");
         userPo.setUserId(135);
+        userPo.setPhoneNumber("456456");
         boolean flag = userMapper.updateUser(userPo);
         assertTrue(flag);
     }
