@@ -3,6 +3,7 @@ package com.minibox;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.minibox.socket.SocketConnection;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,6 +13,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import java.io.IOException;
+
 /**
  * @author May
  */
@@ -19,7 +22,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @MapperScan("com.minibox.dao")
 public class MiniboxApplication {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        SocketConnection.waitToConnect();
         SpringApplication.run(MiniboxApplication.class, args);
     }
 
