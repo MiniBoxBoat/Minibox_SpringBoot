@@ -10,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 @SpringBootTest
@@ -38,6 +40,18 @@ public class SaleMapperTest {
         boolean flag = saleMapper.insertSaleInfo(sale);
         Assert.assertEquals(true, flag);
 
+    }
+
+    @Test
+    public void selectNotPaySaleInfoByUserIdTest(){
+        List<SalePo> salePos = saleMapper.selectNotPaySaleInfoByUserId(136);
+        assertEquals(1, salePos.size());
+    }
+
+    @Test
+    public void updateSaleInfoPayFlagTest(){
+        boolean flag = saleMapper.updateSaleInfoPayFlag(2);
+        assertTrue(flag);
     }
 
 }

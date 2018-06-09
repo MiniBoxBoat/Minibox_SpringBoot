@@ -2,13 +2,36 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
 <mapper namespace="com.minibox.dao.db.SaleMapper">
+    <resultMap id="saleInfo" type="com.minibox.po.SalePo">
+        <id property="saleInfoId" column="sale_info_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="boxId" column="box_id"/>
+        <result property="groupId" column="group_id"/>
+        <result property="payTime" column="pay_time"/>
+        <result property="orderTime" column="order_time"/>
+        <result property="cost" column="cost"/>
+        <result property="payFlag" column="pay_flag"/>
+    </resultMap>
 
     <sql id="sale_info_columns">
-        sale_info_id, user_id, box_id, group_id, pay_time, order_time, cost
+        sale_info_id, user_id, box_id, group_id, pay_time, order_time, cost,pay_flag
     </sql>
 
     <insert id="insertSaleInfo" parameterType="com.minibox.po.SalePo" useGeneratedKeys="true" keyProperty="saleInfoId">
         INSERT INTO sale_info (user_id, box_id, group_id, pay_time, order_time, cost)
         VALUES (#{userId}, #{boxId}, #{groupId}, now(), #{orderTime}, #{cost})
     </insert>
+    
+    <update id="updateSaleInfoPayFlag">
+        UPDATE sale_info
+        SET pay_flag='1'
+        WHERE sale_info_id=#{saleInfoId}
+    </update>
+    
+    <select id="selectNotPaySaleInfoByUserId" resultMap="saleInfo" parameterType="java.lang.Integer">
+        SELECT <include refid="sale_info_columns"/>
+        FROM sale_info
+        WHERE user_id=#{userId} AND pay_flag='0'
+    </select>
+
 </mapper>

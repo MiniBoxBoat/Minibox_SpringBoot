@@ -48,7 +48,7 @@ public class ReservationController {
     }
 
     @PostMapping("getReservations.do")
-    public ResponseEntity<List<ReservationPo>> getReservations(String taken) {
+        public ResponseEntity<List<ReservationPo>> getReservations(String taken) {
         List<ReservationPo> reservations = reservationService.getReservation(taken);
         return new ResponseEntity<>(200, Constants.SUCCESS, reservations);
     }

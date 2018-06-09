@@ -3,6 +3,7 @@ package com.minibox.dao.dbredis;
 import com.minibox.dao.db.UserMapper;
 import com.minibox.dao.redisDao.user.RedisUserDao;
 import com.minibox.po.UserPo;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -96,5 +97,9 @@ public class UserDao {
             redisUserDao.deleteUser(userId);
             return true;
         }
+    }
+
+    public boolean updatePersonId(int userId, String personId){
+        return userMapper.updatePersonId(userId, personId);
     }
 }

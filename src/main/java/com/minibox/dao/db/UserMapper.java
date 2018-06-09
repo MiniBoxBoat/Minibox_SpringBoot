@@ -5,6 +5,8 @@ import com.minibox.po.VerifyCodePo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author MEI
  */
@@ -34,6 +36,8 @@ public interface UserMapper {
     boolean updatePasswordByNewPasswordAndUserId(@Param("newPassword") String newPassword, @Param("userId") int userId);
 
     boolean updateTakenByTakenAndUserId(@Param("taken") String taken, @Param("userId") int userId);
+
+    boolean updatePersonId(@Param("userId") int userId, @Param("personId") String personId);
 
     boolean insertVerifyCode(VerifyCodePo verifyCode);
 

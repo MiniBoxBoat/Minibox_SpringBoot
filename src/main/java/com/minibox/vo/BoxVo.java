@@ -12,5 +12,6 @@ public class BoxVo {
     private String groupName;
     private double lat;
     private double lng;
+    private int orderId;
     private String openTime;
 }

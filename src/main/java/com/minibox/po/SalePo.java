@@ -23,4 +23,5 @@ public class SalePo implements Serializable {
     private String orderTime;
     private double cost;
     private int delFlag;
+    private int payFlag;
 }

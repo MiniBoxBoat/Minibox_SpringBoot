@@ -8,6 +8,7 @@
         <result property="userName" column="username"/>
         <result property="phoneNumber" column="phone_number"/>
         <result property="password" column="password"/>
+        <result property="personId" column="person_id"/>
         <result property="sex" column="sex"/>
         <result property="email" column="email"/>
         <result property="image" column="image"/>
@@ -22,7 +23,7 @@
     </resultMap>
 
     <sql id="user_columns">
-      user_id, userName, password, phone_number, sex, email, image, true_name, credibility, use_time
+      user_id, userName, password, person_id, phone_number, sex, email, image, true_name, credibility, use_time
     </sql>
 
     <sql id="verifyCode_column">
@@ -122,6 +123,12 @@
             100 > user_info.credibility
     </update>
 
+    <update id="updatePersonId">
+        UPDATE user_info
+        SET person_id=#{personId}
+        WHERE user_id=#{userId}
+    </update>
+
     <insert id="insertVerifyCode" parameterType="com.minibox.po.VerifyCodePo">
         INSERT INTO verifycode (phone_number, verify_code) VALUES (#{phoneNumber}, #{verifyCode})
     </insert>
@@ -131,4 +138,5 @@
         <include refid="verifyCode_column"/>
         from verifycode where phone_number=#{phoneNumber}
     </select>
+
 </mapper>

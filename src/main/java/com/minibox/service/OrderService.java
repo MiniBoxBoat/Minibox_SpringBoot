@@ -23,6 +23,7 @@ import com.minibox.service.util.HardwareCheck;
 import com.minibox.service.util.JavaWebToken;
 import com.minibox.service.util.ServiceExceptionChecking;
 import com.minibox.socket.SocketConnection;
+import com.minibox.vo.SaleVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,10 +55,17 @@ public class OrderService {
     @Autowired
     private OrderDao orderDao;
 
+    @Autowired
+    private SaleService saleService;
+
     @Transactional(rollbackFor = RollbackException.class)
     public void addOrder(OrderDto orderDto, String taken) {
         int userId = JavaWebToken.getUserIdAndVerifyTakenFromTaken(taken);
         checkAddOrderParameters(orderDto);
+        List<SaleVo> sales = saleService.getNotPayBoxByUserId(taken);
+        if (sales.size() > 0){
+            throw new ParameterException("你还有未支付的订单没有支付呢");
+        }
         List<Integer> canUseBoxesId = getCanUseBoxesId(orderDto);
         ServiceExceptionChecking.checkBoxSurplus(canUseBoxesId.size());
         UserPo user = userDao.findUserByUserId(userId);

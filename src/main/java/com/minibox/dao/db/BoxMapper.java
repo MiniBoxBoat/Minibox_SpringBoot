@@ -28,4 +28,6 @@ public interface BoxMapper {
 
     int findEmptyLargeBoxCountByGroupId(int groupId);
 
+    List<BoxPo> getUsingBoxesByPersonId(String personId);
+
 }

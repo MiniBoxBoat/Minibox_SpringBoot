@@ -99,5 +99,9 @@ public class UserMapperTest {
         assertTrue(flag);
     }
 
-
+    @Test
+    public void updatePersonIdTest(){
+        boolean flag = userMapper.updatePersonId(131, "person0");
+        assertTrue(flag);
+    }
 }

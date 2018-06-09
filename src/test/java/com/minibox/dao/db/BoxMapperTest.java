@@ -68,4 +68,10 @@ public class BoxMapperTest {
         int emptyLargeBoxCount = boxMapper.findEmptyLargeBoxCountByGroupId(1);
         assertEquals(10, emptyLargeBoxCount);
     }
+
+    @Test
+    public void getUsingBoxesByPersonId(){
+        List<BoxPo> boxPos = boxMapper.getUsingBoxesByPersonId("person0");
+        assertEquals(1, boxPos.size());
+    }
 }

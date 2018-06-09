@@ -99,6 +99,10 @@ public class BoxDao {
         }, false, true);
     }
 
+    public List<BoxPo> getUsingBoxesByPersonId(String personId){
+        return boxMapper.getUsingBoxesByPersonId(personId);
+    }
+
     public List<BoxPo> findEmptySmallBoxByGroupId(int groupId) {
         return boxMapper.findEmptySmallBoxByGroupId(groupId);
     }

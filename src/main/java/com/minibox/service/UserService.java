@@ -17,7 +17,9 @@ import com.minibox.service.util.RamdomNumberUtil;
 import com.minibox.service.util.ServiceExceptionChecking;
 import com.minibox.service.util.Sms;
 import com.minibox.vo.UserVo;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -39,18 +41,18 @@ public class UserService {
     @Resource
     private RedisVerifyCode redisVerifyCode;
 
-    public UserVo addUserAndCheckVerifyCode(UserPo user, String verifyCode){
+    public UserVo addUserAndCheckVerifyCode(UserPo user, String verifyCode) {
         checkUserParameterAndIfDouble(user);
         checkVerifyCode(user.getPhoneNumber(), verifyCode);
-        if (!userDao.insertUser(user)){
+        if (!userDao.insertUser(user)) {
             throw new ServerException();
         }
         return userPoToUserVo(user);
     }
 
-    private void checkUserParameterAndIfDouble(UserPo user){
-        if (user.getUserName()==null || user.getSex()==null
-                || user. getPhoneNumber() == null ){
+    private void checkUserParameterAndIfDouble(UserPo user) {
+        if (user.getUserName() == null || user.getSex() == null
+                || user.getPhoneNumber() == null) {
             throw new ParameterException(ExceptionMessage.PARAMETER_IS_NOT_FULL);
         }
         ServiceExceptionChecking.checkUserNameIsTooLong(user.getUserName());
@@ -63,11 +65,11 @@ public class UserService {
         ServiceExceptionChecking.checkUserNameIsUsed(userGetByUserName);
     }
 
-    public UserVo checkUser(String phoneNumber, String password){
+    public UserVo checkUser(String phoneNumber, String password) {
         ServiceExceptionChecking.checkPhoneNumberIsTrue(phoneNumber);
         UserPo user = userDao.findUserByPhoneNumber(phoneNumber);
         Objects.requireNonNull(user, ExceptionMessage.USER_NOT_EXSTS);
-        if (!user.getPassword().equals(password)){
+        if (!user.getPassword().equals(password)) {
             throw new ParameterException(ExceptionMessage.PASSWORD_IS_WRONG);
         }
         UserPo userPo = userDao.findUserByPhoneNumberAndPassword(phoneNumber, password);
@@ -84,51 +86,54 @@ public class UserService {
         return userPoToUserVo(user);
     }
 
-    public void updateUser(UserPo user,String taken) {
+    public void updateUser(UserPo user, String taken) {
         int userId = JavaWebToken.getUserIdAndVerifyTakenFromTaken(taken);
         user.setUserId(userId);
         checkUpdateUserParameters(user);
-        if (!userDao.updateUser(user)){
-            throw new ServerException();
+        try {
+            if (!userDao.updateUser(user)) {
+                throw new ServerException();
+            }
+        }catch (DataAccessException e){
+            throw new ParameterException("用户名已经被使用过了哦");
         }
     }
 
-    private void checkUpdateUserParameters(UserPo user){
-        if (user.getUserName()==null || user.getEmail()==null || user.getSex()==null){
+    private void checkUpdateUserParameters(UserPo user) {
+        if (user.getUserName() == null || user.getEmail() == null || user.getSex() == null) {
             throw new ParameterException(ExceptionMessage.PARAMETER_IS_NOT_FULL);
         }
         ServiceExceptionChecking.checkUserNameIsTooLong(user.getUserName());
-        ServiceExceptionChecking.checkUserNameIsUsed(userDao.findUserByUserName(user.getUserName()));
         ServiceExceptionChecking.checkSexIsTrue(user.getSex());
     }
 
-    public void updateAvatar(String taken, String avatarUrl){
+    public void updateAvatar(String taken, String avatarUrl) {
         int userId = JavaWebToken.getUserIdAndVerifyTakenFromTaken(taken);
-        if (!userDao.updateAvatarByAvatarAndUserId(avatarUrl, userId)){
+        if (!userDao.updateAvatarByAvatarAndUserId(avatarUrl, userId)) {
             throw new ServerException();
         }
     }
 
-    public void updatePasswordAndCheckVerifyCode(String newPassword, String taken, String verifyCode){
+    public void updatePasswordAndCheckVerifyCode(String newPassword, String taken, String verifyCode) {
         int userId = JavaWebToken.getUserIdAndVerifyTakenFromTaken(taken);
         UserPo user = userDao.findUserByUserId(userId);
         String phoneNumber = user.getPhoneNumber();
         checkVerifyCode(phoneNumber, verifyCode);
 
-        if (newPassword.length() < 5){
+        if (newPassword.length() < 5) {
             throw new ParameterException(ExceptionMessage.PASSWORD_IS_TOO_SHORT);
         }
-        if (!userDao.updatePasswordByNewPasswordAndUserId(newPassword, userId)){
+        if (!userDao.updatePasswordByNewPasswordAndUserId(newPassword, userId)) {
             throw new ServerException();
         }
     }
 
-    private void checkVerifyCode(String phoneNumber, String code){
+    private void checkVerifyCode(String phoneNumber, String code) {
         String verifyCode = redisVerifyCode.getVerifyCode(phoneNumber);
-        if (verifyCode == null){
+        if (verifyCode == null) {
             throw new ParameterException("请重新获取验证码");
         }
-        if (!code.equals(verifyCode)){
+        if (!code.equals(verifyCode)) {
             throw new VerifyCodeException();
         }
         redisVerifyCode.deleteVerifyCode(phoneNumber);
@@ -145,22 +150,30 @@ public class UserService {
         return code;
     }
 
-    private UserVo userPoToUserVo(UserPo userPo){
+    public void updatePersonId(String token, String personId){
+        int userId = JavaWebToken.getUserIdAndVerifyTakenFromTaken(token);
+        if(!userDao.updatePersonId(userId, personId)){
+            throw new ServerException();
+        }
+    }
+
+    private UserVo userPoToUserVo(UserPo userPo) {
         UserVo userVo = new UserVo();
         userVo.setUserId(userPo.getUserId());
         userVo.setCredibility(userPo.getCredibility());
         userVo.setUseTime(userPo.getUseTime());
         userVo.setSex(userPo.getSex());
+        userVo.setPersonId(userPo.getPersonId());
         if (userPo.getUserName() != null) {
             userVo.setUserName(userPo.getUserName());
         }
-        if (userPo.getEmail() != null){
+        if (userPo.getEmail() != null) {
             userVo.setEmail(userPo.getEmail());
         }
-        if(userPo.getPhoneNumber() != null){
+        if (userPo.getPhoneNumber() != null) {
             userVo.setPhoneNumber(userPo.getPhoneNumber());
         }
-        if (userPo.getImage() != null){
+        if (userPo.getImage() != null) {
             userVo.setImage(userPo.getImage());
         }
         if (userPo.getTrueName() != null) {

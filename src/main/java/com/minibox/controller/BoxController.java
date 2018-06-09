@@ -32,4 +32,16 @@ public class BoxController {
         List<BoxVo> boxes = boxService.getReservingBoxes(taken);
         return new ResponseEntity<>(200, Constants.SUCCESS, boxes);
     }
+
+    @GetMapping("usingBoxes")
+    public ResponseEntity<List<BoxVo>> showUsingBoxesByPersonId(String personId){
+        List<BoxVo> boxVos = boxService.getUsingBoxesByPersonId(personId);
+        return new ResponseEntity<>(200, Constants.SUCCESS, boxVos);
+    }
+
+    @GetMapping("openBox")
+    public ResponseEntity<Object> openBox(int[] boxIds){
+        boxService.openBoxes(boxIds);
+        return new ResponseEntity<>(200, Constants.SUCCESS, null);
+    }
 }

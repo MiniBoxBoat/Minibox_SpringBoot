@@ -72,7 +72,8 @@ VALUES (1, 40, 30, 106.5585506366, 29.5252427172, '重庆市南岸区南坪万�
 
 INSERT INTO `order_info` (`order_id`, `user_id`, `group_id`, `box_id`, `pay_time`, `money`, `order_time`, `del_flag`)
 VALUES (88, 195, 1, 101, NULL, 0.00, '2018-01-04 13:47:04', 0),
-  (89, 195, 1, 102, NULL, 0.00, '2018-01-04 13:47:04', 0);
+  (89, 195, 1, 102, NULL, 0.00, '2018-01-04 13:47:04', 0),
+(90, 136, 1, 103, NULL, 0.00, '2018-01-04 13:47:04', 0);
 
 /*Data for the table `reservation_info` */
 
@@ -129,6 +130,8 @@ VALUES (131, 'May', 'e10adc3949ba59abbe56e057f20f883e', NULL, '15808060138', '�
   (135, 'zzq', 'e10adc3949ba59abbe56e057f20f883e', NULL, '18500944413', '男', '', NULL, 10, 0, NULL,
    'eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MTY5NTQ5NTkwMDYsInVzZXJJZCI6MTM1fQ.QvKJ27IqxW79zxxIeKmaTT9ezC6tVScw_iNa1a4-E9c');
 
+INSERT INTO `user_info` (`user_id`, `username`, `password`, `person_id`,`true_name`, `phone_number`, `sex`, `email`, `verify_code`, `credibility`, `use_time`, `image`, `taken`)
+values (136,'May2','123456','person0',NULL,'15808060137','男','', NULL, 100,0,'222',NULL);
 /*Data for the table `verifycode` */
 
 INSERT INTO `verifycode` (`phone_number`, `verify_code`)
@@ -139,3 +142,6 @@ INSERT INTO transportation_info (transportation_id, user_id, start_place, end_pl
                                          receive_time, goods_type, company, transportation_comment, cost, score,
                                          transportation_status, finished_flag, del_flag) VALUES (1, 1, '重庆', '上海',
                                         'May', '15808060138', now(), '衣服', '韵达', '尽快', 0.00, null, 0, 0, 0);
+INSERT INTO sale_info(sale_info_id, user_id, box_id, group_id, pay_time, order_time, cost)
+values (1, 136,104, 1, NULL, '2018-01-22 00:58:52', 5),
+  (2, 136,105, 1, NULL, '2018-01-22 00:58:52', 5);

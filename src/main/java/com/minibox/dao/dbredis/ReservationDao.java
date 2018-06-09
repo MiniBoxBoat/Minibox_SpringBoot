@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.minibox.constants.Redis_Schema.COUPON_ID_SET_USER;
 import static com.minibox.constants.Redis_Schema.RESERVATION_ID_SET_USER;
 
 @Component

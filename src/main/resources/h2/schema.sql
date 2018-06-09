@@ -85,6 +85,7 @@ CREATE TABLE `sale_info` (
   `pay_time` datetime NOT NULL,
   `order_time` datetime NOT NULL,
   `cost` DOUBLE NOT NULL,
+  `pay_flag` tinyint default '0',
   PRIMARY KEY (`sale_info_id`)
 );
 
@@ -94,6 +95,7 @@ CREATE TABLE `user_info` (
   `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(11) NOT NULL,
   `password` varchar(255) NOT NULL,
+  `person_id` varchar(50),
   `true_name` varchar(10) DEFAULT NULL,
   `phone_number` varchar(11) DEFAULT NULL,
   `sex` char(1) DEFAULT NULL,

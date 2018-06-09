@@ -74,4 +74,14 @@
         END
         WHERE box_id = #{boxId}
     </update>
+
+    <select id="getUsingBoxesByPersonId" parameterType="java.lang.String" resultMap="boxPo">
+        SELECT <include refid="box_columns"/>
+        FROM box_info
+        WHERE box_id IN
+        (SELECT box_id
+        FROM order_info
+        WHERE user_id= (SELECT user_id FROM user_info WHERE person_id=#{personId})
+        AND del_flag='0')
+    </select>
 </mapper>

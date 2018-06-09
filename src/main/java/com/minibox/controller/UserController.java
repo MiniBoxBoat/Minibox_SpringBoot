@@ -6,10 +6,9 @@ import com.minibox.po.UserPo;
 import com.minibox.service.UserService;
 import com.minibox.vo.UserVo;
 import com.minibox.constants.Constants;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 /**
@@ -41,7 +40,7 @@ public class UserController {
     }
 
     @PostMapping("updateUserInfo.do")
-    public ResponseEntity<Object> updateUserInfo(UserPo user,String taken) throws Exception {
+    public ResponseEntity<Object> updateUserInfo(UserPo user,String taken) {
         userService.updateUser(user, taken);
         return new ResponseEntity<>(200, Constants.SUCCESS, null);
     }
@@ -61,6 +60,12 @@ public class UserController {
     @PostMapping("updatePassword.do")
     public ResponseEntity<Object> updatePassword(String newPassword, String taken, String verifyCode) {
         userService.updatePasswordAndCheckVerifyCode(newPassword, taken, verifyCode);
+        return new ResponseEntity<>(200, Constants.SUCCESS, null);
+    }
+
+    @PostMapping("personId")
+    public ResponseEntity<Object> updatePersonId(String token, String personId){
+        userService.updatePersonId(token, personId);
         return new ResponseEntity<>(200, Constants.SUCCESS, null);
     }
 }
